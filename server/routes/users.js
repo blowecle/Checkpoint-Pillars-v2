@@ -39,13 +39,27 @@ router.delete('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-      const newUser = await User.create(req.body);
-      res.status(201).send(newUser);
-  } catch (err) {
-    res.sendStatus(409);
-      next(err);
+    const [newUser, wasCreated] = await User.findOrCreate({where:{name: req.body.name}});
+    if(wasCreated){
+        res.status(201).send(newUser);
+      }
+      res.sendStatus(409)
+    } catch (err) {
+    next(err);
   }
 });
+
+router.put('/:id', async (req, res, next) =>{
+  try{
+    const user = await User.findByPk(req.params.id);
+        if (!user) res.sendStatus(404);
+        await user.set(req.body).save();
+        res.status(200).send(user);
+  }
+  catch(err){
+    next(err);
+  }
+})
 
 User.findTeachersAndMentees = async function(){
     const teachers = await this.findAll({

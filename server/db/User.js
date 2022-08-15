@@ -53,10 +53,19 @@ return await this.findAll(
 }
 
 User.beforeUpdate(async (instance, options) => {
-  const mentor = await User.findOne({where:{id:instance.mentorId}});
-  console.log(mentor)
-  if((instance._previousDataValues.mentorId !== null && instance._previousDataValues.userType === 'STUDENT') || mentor.userType === 'STUDENT'){
-    throw new Error("Cannot update instance")
+  const mentees = await User.findAll({where:{mentorId: instance.id}})
+  const mentor = await User.findByPk(instance.mentorId)
+  if(mentor){
+    if(mentor.userType === 'STUDENT'){
+      throw new Error("Mentors can't be STUDENTS")
+    }
+  }
+  if(instance._previousDataValues.mentorId !== null){
+    throw new Error("Cannot become a TEACHER if STUDENT still has a MENTOR")
+  } else{
+    if(mentees.length > 0){
+      throw new Error("Cannot become a STUDENT if TEACHER still has MENTEES")
+    }
   }
 
 })
