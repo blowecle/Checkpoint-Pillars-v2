@@ -52,8 +52,9 @@ router.post('/', async (req, res, next) => {
 router.put('/:id', async (req, res, next) =>{
   try{
     const user = await User.findByPk(req.params.id);
+    console.log(req.body)
         if (!user) res.sendStatus(404);
-        await user.set(req.body).save();
+        await user.set(req.body);
         res.status(200).send(user);
   }
   catch(err){

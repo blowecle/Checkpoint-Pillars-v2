@@ -67,8 +67,21 @@ User.beforeUpdate(async (instance, options) => {
       throw new Error("Cannot become a STUDENT if TEACHER still has MENTEES")
     }
   }
-
 })
+
+User.prototype.getPeers = async function(){
+  const users = await User.findAll({
+    where:{
+      mentorId: this.mentorId
+    }
+  });
+  return users.reduce((acc, val) =>{
+    if(this.name !== val.name){
+      acc.push(val);
+      return acc;
+    } else return acc;
+  }, [])
+}
 /**
  * We've created the association for you!
  *

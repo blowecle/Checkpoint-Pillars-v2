@@ -22,12 +22,12 @@ describe('Extra Credit: CSS, Instance Methods, Many-to-Many, Query Params', () =
     });
 
     describe('Instance Method: getPeers', () => {
-      xit('getPeers is an instance method on User', async () => {
+      it('getPeers is an instance method on User', async () => {
         const hannah = await User.create({ name: 'HANNAH' });
         expect(hannah.getPeers).to.be.a('function');
       });
 
-      xit('getPeers returns all other students assigned to the same mentor', async () => {
+      it('getPeers returns all other students assigned to the same mentor', async () => {
         const freddy = await User.create({
           name: 'FREDDY',
           userType: 'TEACHER',
